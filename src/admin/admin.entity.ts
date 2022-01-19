@@ -6,13 +6,13 @@ export class AdminEntity {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column('text')
+  @Column()
   @Exclude()
   password: string;
 
   @Column('text')
   username: string;
 
-  @Column('text')
+  @Column({ unique: true })
   email: string;
 }
