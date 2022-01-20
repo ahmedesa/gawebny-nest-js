@@ -1,7 +1,5 @@
 import { DatabaseModule } from './config/database.module';
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { AdminModule } from './admin/admin.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
@@ -21,7 +19,7 @@ import * as Joi from '@hapi/joi';
       }),
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
