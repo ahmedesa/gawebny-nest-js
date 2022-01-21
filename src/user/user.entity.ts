@@ -1,8 +1,9 @@
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { UserTypes } from './user-type';
 
-@Entity('Admin')
-export class AdminEntity {
+@Entity('user')
+export class UserEntity {
   @PrimaryGeneratedColumn()
   id: string;
 
@@ -14,6 +15,9 @@ export class AdminEntity {
 
   @Column({ unique: true })
   email: string;
+
+  @Column('integer')
+  type: number = UserTypes.User;
 
   @BeforeInsert()
   async hashPassword() {

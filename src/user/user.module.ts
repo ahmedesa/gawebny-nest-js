@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AdminController } from './controllers/admin.controller';
-import { AdminService } from './services/admin.service';
-import { AdminRepository } from './repositories/admin.repository';
-import { AdminAuthController } from './controllers/admin-auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
+import { UserService } from './services/user.service';
+import { UserController } from './controllers/user.controller';
+import { UserAuthController } from './controllers/user-auth.controller';
+import { UserRepository } from './repositories/user.repository';
 
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([AdminRepository]),
+    TypeOrmModule.forFeature([UserRepository]),
     PassportModule.register({
       defaultStrategy: 'jwt',
       property: 'user',
@@ -38,8 +38,8 @@ import { JwtStrategy } from './jwt.strategy';
       }),
     }),
   ],
-  providers: [AdminService, JwtStrategy],
-  controllers: [AdminController, AdminAuthController],
-  exports: [AdminService],
+  providers: [UserService, JwtStrategy],
+  controllers: [UserController, UserAuthController],
+  exports: [UserService],
 })
-export class AdminModule {}
+export class UserModule {}

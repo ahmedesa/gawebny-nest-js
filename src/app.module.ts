@@ -2,14 +2,14 @@ import { APP_FILTER } from '@nestjs/core';
 import { HTTPExceptionsFilter } from './shared/rules/stratigies/http-exception.filter';
 import { DatabaseModule } from './config/database.module';
 import { Module } from '@nestjs/common';
-import { AdminModule } from './admin/admin.module';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     DatabaseModule,
-    AdminModule,
+    UserModule,
     ConfigModule.forRoot({
       validationSchema: Joi.object({
         DB_HOST: Joi.string().required(),
