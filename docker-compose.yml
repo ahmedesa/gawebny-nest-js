@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:5.7
+    ports: 
+      - "3307:3306"
+    env_file:
+      - docker.env
+    environment: 
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    networks: 
+      - mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    ports: 
+      - "8585:80"
+    environment:
+      - PMA_ARBITRARY=1
+    networks: 
+      - mysql
+
+networks:
+  mysql:
+    driver: bridge
