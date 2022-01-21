@@ -1,4 +1,3 @@
-import { Exclude } from 'class-transformer';
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
@@ -8,7 +7,6 @@ export class AdminEntity {
   id: string;
 
   @Column()
-  @Exclude()
   password: string;
 
   @Column('text')

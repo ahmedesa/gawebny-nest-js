@@ -4,12 +4,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AdminEntity } from '../admin.entity';
 import { AdminRepository } from '../repositories/admin.repository';
 import { AdminLoginDTO } from '../dto/admin-login-dto';
+import { JwtService } from '@nestjs/jwt';
+import { JWTPayload } from '../jwt-token.interface';
 
 @Injectable()
 export class AdminService extends TypeOrmCrudService<AdminEntity> {
   constructor(
     @InjectRepository(AdminRepository)
     private adminRepository: AdminRepository,
+    private readonly jwtService: JwtService,
   ) {
     super(adminRepository);
   }
@@ -23,6 +26,19 @@ export class AdminService extends TypeOrmCrudService<AdminEntity> {
       throw new HttpException('invalid user or password', 404);
     }
 
-    return admin;
+    return this.buildAdminResponse(admin);
+  }
+
+  buildAdminResponse(admin: AdminEntity) {
+    return {
+      ...admin,
+      token: this.generateJWTToken(admin),
+    };
+  }
+
+  generateJWTToken(admin: AdminEntity): string {
+    const payload: JWTPayload = { id: Number(admin.id) };
+
+    return this.jwtService.sign(payload);
   }
 }
