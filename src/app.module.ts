@@ -1,3 +1,5 @@
+import { APP_FILTER } from '@nestjs/core';
+import { HTTPExceptionsFilter } from './shared/rules/stratigies/http-exception.filter';
 import { DatabaseModule } from './config/database.module';
 import { Module } from '@nestjs/common';
 import { AdminModule } from './admin/admin.module';
@@ -22,6 +24,11 @@ import * as Joi from '@hapi/joi';
     }),
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: HTTPExceptionsFilter,
+    },
+  ],
 })
 export class AppModule {}
