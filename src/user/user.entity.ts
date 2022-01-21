@@ -1,9 +1,17 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserTypes } from './user-type';
+import { QuestionEntity } from 'src/question/entities/question.entity';
 
-@Entity('user')
-export class UserEntity {
+@Entity('users')
+export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: string;
 
@@ -23,6 +31,9 @@ export class UserEntity {
     default: UserTypes.User,
   })
   type: number;
+
+  @OneToMany(() => QuestionEntity, (question: QuestionEntity) => question.user)
+  public questions: QuestionEntity[];
 
   @BeforeInsert()
   async hashPassword() {

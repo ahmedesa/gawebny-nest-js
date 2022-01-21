@@ -1,7 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from 'src/user/user.entity';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('questions')
-export class QuestionEntity {
+export class QuestionEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -14,4 +21,7 @@ export class QuestionEntity {
     type: 'varchar',
   })
   body: string;
+
+  @ManyToOne(() => UserEntity, (user: UserEntity) => user.questions)
+  public user: UserEntity;
 }

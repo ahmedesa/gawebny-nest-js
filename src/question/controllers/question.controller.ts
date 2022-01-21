@@ -9,6 +9,8 @@ import {
   UseGuards,
   HttpStatus,
   HttpCode,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { QuestionService } from '../services/question.service';
 import { CreateQuestionDto } from '../dto/create-question.dto';
@@ -24,8 +26,8 @@ export class QuestionController {
   @Post()
   @HttpCode(201)
   @UseGuards(RoleGuard(UserTypes.User))
-  create(@Body() createQuestionDto: CreateQuestionDto) {
-    return this.questionService.create(createQuestionDto);
+  create(@Body() createQuestionDto: CreateQuestionDto, @Req() request) { 
+    return this.questionService.create(createQuestionDto, request.user);
   }
 
   @Get()

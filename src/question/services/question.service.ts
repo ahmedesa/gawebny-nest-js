@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from 'src/user/user.entity';
 import { CreateQuestionDto } from '../dto/create-question.dto';
 import { UpdateQuestionDto } from '../dto/update-question.dto';
 import { QuestionRepository } from '../repositories/question.repository';
@@ -11,23 +12,52 @@ export class QuestionService {
     private QuestionRepository: QuestionRepository,
   ) {}
 
-  create(createQuestionDto: CreateQuestionDto) {
-    return 'This action adds a new question';
+  async create(createQuestionDto: CreateQuestionDto, user: UserEntity) {
+    const question = await this.QuestionRepository.create({
+      ...createQuestionDto,
+      user: user,
+    });
+
+    await question.save();
+
+    return question;
   }
 
-  findAll() {
-    return `This action returns all question`;
+  async findAll() {
+    return await this.QuestionRepository.find({ relations: ['user'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} question`;
+  async findOne(id: number) {
+    const question = await this.QuestionRepository.findOne(id, {
+      relations: ['user'],
+    });
+    if (!question) {
+      throw new HttpException('invalid user or password', 404);
+    }
+
+    return question;
   }
 
-  update(id: number, updateQuestionDto: UpdateQuestionDto) {
-    return `This action updates a #${id} question`;
+  async update(id: number, updateQuestionDto: UpdateQuestionDto) {
+    const question = await this.QuestionRepository.update(
+      id,
+      updateQuestionDto,
+    );
+
+    if (!question) {
+      throw new HttpException('invalid user or password', 404);
+    }
+
+    return question;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} question`;
+  async remove(id: number) {
+    const question = await this.QuestionRepository.findOne(id);
+
+    if (!question) {
+      throw new HttpException('invalid user or password', 404);
+    }
+
+    this.QuestionRepository.remove(question);
   }
 }
