@@ -5,9 +5,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
 import { UserModule } from './user/user.module';
+import { QuestionModule } from './question/question.module';
 
 @Module({
   imports: [
+    QuestionModule,
     DatabaseModule,
     UserModule,
     ConfigModule.forRoot({
