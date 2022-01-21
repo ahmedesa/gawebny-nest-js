@@ -1,5 +1,5 @@
 import { APP_FILTER } from '@nestjs/core';
-import { HTTPExceptionsFilter } from './shared/rules/stratigies/http-exception.filter';
+import { HTTPExceptionsFilter } from './shared/http-exception.filter';
 import { DatabaseModule } from './config/database.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';

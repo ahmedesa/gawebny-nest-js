@@ -1,4 +1,5 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { UserTypes } from '../user-type';
 
 export class CreateUserDTO {
   @IsNotEmpty()
@@ -6,6 +7,10 @@ export class CreateUserDTO {
 
   @IsNotEmpty()
   password: string;
+  
+  @IsOptional()
+  @IsEnum(UserTypes)
+  type :number;
 
   @IsNotEmpty()
   email: string;

@@ -60,7 +60,8 @@ export class HTTPExceptionsFilter implements ExceptionFilter {
     // }
 
     return status !== HttpStatus.INTERNAL_SERVER_ERROR
-      ? exception.message || null
+      // ? exception.message || null || exception.getResponse() todo fix 
+      ? exception.getResponse() || null
       : 'Internal server error';
   }
 

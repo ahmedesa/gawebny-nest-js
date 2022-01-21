@@ -17,7 +17,12 @@ export class UserEntity {
   email: string;
 
   @Column('integer')
-  type: number = UserTypes.User;
+  @Column({
+    type: 'enum',
+    enum: UserTypes,
+    default: UserTypes.User,
+  })
+  type: number;
 
   @BeforeInsert()
   async hashPassword() {
