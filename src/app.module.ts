@@ -16,6 +16,8 @@ import * as Joi from '@hapi/joi';
         DB_NAME: Joi.string().required(),
         DB_PORT: Joi.number().required(),
         PORT: Joi.number(),
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRATION_TIME: Joi.string().required(),
       }),
     }),
   ],
