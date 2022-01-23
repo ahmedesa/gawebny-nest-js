@@ -11,6 +11,7 @@ import { UserEntity } from '../user.entity';
 import { UserRepository } from '../repositories/user.repository';
 import { UserLoginDTO } from '../dto/user-login-dto';
 import { CreateUserDTO } from '../dto/create-user-dto';
+import { FilesService } from 'src/shared/file/file-uplode.service';
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
@@ -18,6 +19,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     @InjectRepository(UserRepository)
     private UserRepository: UserRepository,
     private readonly jwtService: JwtService,
+    private readonly filesService: FilesService,
   ) {
     super(UserRepository);
   }
@@ -48,6 +50,28 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     await this.UserRepository.save(CreateUserDTO);
 
     return this.buildUserResponse(user);
+  }
+
+  async addAvatar(
+    userId: number,
+    imageBuffer: Buffer,
+    filename: string,
+  ): Promise<string> {
+    const user = await this.UserRepository.findOne(userId);
+
+    if (user.avatar) {
+      await this.filesService.deletePublicFile(user.avatar);
+    }
+
+    const avatar = await this.filesService.uploadPublicFile(
+      imageBuffer,
+      filename,
+    );
+    await this.UserRepository.update(userId, {
+      avatar: avatar.key,
+    });
+
+    return avatar.key;
   }
 
   buildUserResponse(User: UserEntity) {

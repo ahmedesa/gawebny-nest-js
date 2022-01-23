@@ -9,11 +9,12 @@ import {
 import * as bcrypt from 'bcrypt';
 import { UserTypes } from './user-type';
 import { QuestionEntity } from 'src/question/entities/question.entity';
+import { Transform } from 'class-transformer';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
   @Column()
   password: string;
@@ -31,6 +32,10 @@ export class UserEntity extends BaseEntity {
     default: UserTypes.User,
   })
   type: number;
+
+  @Column()
+  @Transform(({ value }) => (value ? `${process.env.AWS_PUBLIC_BUCKET_URL}/${value}` : null))
+  avatar?: string;
 
   @OneToMany(() => QuestionEntity, (question: QuestionEntity) => question.user)
   public questions: QuestionEntity[];
