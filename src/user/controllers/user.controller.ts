@@ -1,5 +1,7 @@
 import {
+  Body,
   Controller,
+  Param,
   Post,
   Req,
   UploadedFile,
@@ -16,7 +18,7 @@ import { UserTypes } from '../user-type';
 import { JWTAuthGuard } from '../jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
-// @UseGuards(RoleGuard(UserTypes.ADMIN))
+@UseGuards(RoleGuard(UserTypes.ADMIN))
 @Crud({
   model: { type: UserEntity },
   params: {},
@@ -29,14 +31,14 @@ import { Express } from 'express';
 export class UserController implements CrudController<UserEntity> {
   constructor(public service: UserService) {}
 
-  @Post('avatar')
-  // @UseGuards(JWTAuthGuard)
+  @Post('avatar/:userId')
+  @UseGuards(JWTAuthGuard)
   @UseInterceptors(FileInterceptor('file'))
-  async addAvatar(@Req() request, @UploadedFile() file: Express.Multer.File) {
-    return this.service.addAvatar(
-      1,
-      file.buffer,
-      file.originalname,
-    );
+  async addAvatar(
+    @Param() userId,
+    @Req() request,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.service.addAvatar(userId, file.buffer, file.originalname);
   }
 }
