@@ -1,9 +1,4 @@
-import {
-  CanActivate,
-  CanActivate,
-  HttpException,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/user.entity';
 import { CreateQuestionDto } from '../dto/create-question.dto';
@@ -28,14 +23,16 @@ export class QuestionService {
     return question;
   }
 
-  async findAll(offset?: number, limit?: number) {
+  async findAll(page?: number, per_page?: number) {
+    let skip = (page - 1) * per_page;
+
     const [items, count] = await this.QuestionRepository.findAndCount({
       relations: ['user'],
       order: {
         id: 'ASC',
       },
-      skip: offset,
-      take: limit,
+      skip: skip,
+      take: per_page,
     });
 
     return { items, count };
