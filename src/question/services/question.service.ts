@@ -1,4 +1,9 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  CanActivate,
+  HttpException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/user.entity';
 import { CreateQuestionDto } from '../dto/create-question.dto';
@@ -23,8 +28,17 @@ export class QuestionService {
     return question;
   }
 
-  async findAll() {
-    return await this.QuestionRepository.find({ relations: ['user'] });
+  async findAll(offset?: number, limit?: number) {
+    const [items, count] = await this.QuestionRepository.findAndCount({
+      relations: ['user'],
+      order: {
+        id: 'ASC',
+      },
+      skip: offset,
+      take: limit,
+    });
+
+    return { items, count };
   }
 
   async findOne(id: number) {
