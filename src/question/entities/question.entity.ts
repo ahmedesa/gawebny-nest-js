@@ -3,6 +3,7 @@ import {
   BaseEntity,
   Column,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -22,6 +23,7 @@ export class QuestionEntity extends BaseEntity {
   })
   body: string;
 
+  @Index('question_userId_index')
   @ManyToOne(() => UserEntity, (user: UserEntity) => user.questions)
   public user: UserEntity;
 }
