@@ -10,11 +10,13 @@ import { UserAuthController } from './controllers/user-auth.controller';
 import { UserRepository } from './repositories/user.repository';
 import { FilesService } from 'src/shared/file/file-uplode.service';
 import { FileModule } from 'src/shared/file/file.module';
+import { MailModule } from 'src/shared/mail/mail.module';
 
 @Module({
   imports: [
     ConfigModule,
     FileModule,
+    MailModule,
     TypeOrmModule.forFeature([UserRepository]),
     PassportModule.register({
       defaultStrategy: 'jwt',

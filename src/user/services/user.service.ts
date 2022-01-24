@@ -12,6 +12,7 @@ import { UserRepository } from '../repositories/user.repository';
 import { UserLoginDTO } from '../dto/user-login-dto';
 import { CreateUserDTO } from '../dto/create-user-dto';
 import { FilesService } from 'src/shared/file/file-uplode.service';
+import MailService from 'src/shared/mail/mail.service';
 
 @Injectable()
 export class UserService extends TypeOrmCrudService<UserEntity> {
@@ -20,6 +21,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     private UserRepository: UserRepository,
     private readonly jwtService: JwtService,
     private readonly filesService: FilesService,
+    private readonly mailService: MailService,
   ) {
     super(UserRepository);
   }
@@ -48,6 +50,12 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     user = await this.UserRepository.create(CreateUserDTO);
 
     await this.UserRepository.save(CreateUserDTO);
+
+    await this.mailService.sendMail({
+      to: user.email,
+      subject: 'welcome',
+      text: 'welcome to our website',
+    });
 
     return this.buildUserResponse(user);
   }
