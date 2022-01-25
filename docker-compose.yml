@@ -1,31 +1,51 @@
-version: "3"
+version: '3'
 services:
   postgres:
     container_name: postgres
     image: postgres:latest
     ports:
-    - "5432:5432"
+      - '5432:5432'
     volumes:
-    - /data/postgres:/data/postgres
+      - /data/postgres:/data/postgres
     env_file:
-    - docker.env
+      - docker.env
     networks:
-    - postgres
- 
+      - postgres
+
   pgadmin:
     links:
-    - postgres:postgres
+      - postgres:postgres
     container_name: pgadmin
     image: dpage/pgadmin4
     ports:
-    - "8080:80"
+      - '8080:80'
     volumes:
-    - /data/pgadmin:/root/.pgadmin
+      - /data/pgadmin:/root/.pgadmin
     env_file:
-    - docker.env
+      - docker.env
     networks:
-    - postgres
- 
+      - postgres
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+    user: '1000:1000'
+    volumes:
+      - data/elasticsearch:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - bootstrap.memory_lock=true
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - '9200:9200'
+    networks:
+      - default
+
+
 networks:
   postgres:
     driver: bridge

@@ -1,4 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/user/user.entity';
 import { CreateQuestionDto } from '../dto/create-question.dto';
@@ -10,6 +11,7 @@ export class QuestionService {
   constructor(
     @InjectRepository(QuestionRepository)
     private QuestionRepository: QuestionRepository,
+    private readonly elasticsearchService: ElasticsearchService,
   ) {}
 
   async create(createQuestionDto: CreateQuestionDto, user: UserEntity) {
