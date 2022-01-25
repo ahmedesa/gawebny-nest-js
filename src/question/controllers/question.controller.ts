@@ -33,7 +33,6 @@ export class QuestionController {
   }
 
   @Get()
-  @UseGuards(RoleGuard(UserTypes.ADMIN))
   findAll(@Query() { page, per_page }: PaginationParams) {
     return this.questionService.findAll(page, per_page);
   }

@@ -33,8 +33,10 @@ export class UserEntity extends BaseEntity {
   })
   type: number;
 
-  @Column()
-  @Transform(({ value }) => (value ? `${process.env.AWS_PUBLIC_BUCKET_URL}/${value}` : null))
+  @Column({ nullable: true })
+  @Transform(({ value }) =>
+    value ? `${process.env.AWS_PUBLIC_BUCKET_URL}/${value}` : null,
+  )
   avatar?: string;
 
   @OneToMany(() => QuestionEntity, (question: QuestionEntity) => question.user)

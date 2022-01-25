@@ -20,7 +20,7 @@ services:
     ports:
       - '8080:80'
     volumes:
-      - /data/pgadmin:/root/.pgadmin
+      - ./data/pgadmin:/root/.pgadmin
     env_file:
       - docker.env
     networks:
@@ -28,23 +28,25 @@ services:
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
-    user: '1000:1000'
     volumes:
-      - /data/elasticsearch:/usr/share/elasticsearch/data
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
     environment:
-      - discovery.type=single-node
-      - cluster.routing.allocation.disk.threshold_enabled=false
+      - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
       - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+      - discovery.type=single-node
     ulimits:
       memlock:
         soft: -1
         hard: -1
     ports:
       - '9200:9200'
-    networks:
-      - default
-
+  kibana:
+    image: kibana:7.9.1
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
 
 networks:
   postgres:
