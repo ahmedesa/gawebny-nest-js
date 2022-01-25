@@ -1,26 +1,31 @@
 version: "3"
-
 services:
-  mysql:
-    image: mysql:5.7
-    ports: 
-      - "3307:3306"
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+    - "5432:5432"
+    volumes:
+    - /data/postgres:/data/postgres
     env_file:
-      - docker.env
-    environment: 
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-    networks: 
-      - mysql
-
-  phpmyadmin:
-    image: phpmyadmin
-    ports: 
-      - "8585:80"
-    environment:
-      - PMA_ARBITRARY=1
-    networks: 
-      - mysql
-
+    - docker.env
+    networks:
+    - postgres
+ 
+  pgadmin:
+    links:
+    - postgres:postgres
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    ports:
+    - "8080:80"
+    volumes:
+    - /data/pgadmin:/root/.pgadmin
+    env_file:
+    - docker.env
+    networks:
+    - postgres
+ 
 networks:
-  mysql:
+  postgres:
     driver: bridge
