@@ -69,6 +69,8 @@ export class QuestionService {
       throw new HttpException('invalid user or password', 404);
     }
 
+    await this.updateIndex(question);
+
     return question;
   }
 
@@ -78,6 +80,8 @@ export class QuestionService {
     if (!question) {
       throw new HttpException('invalid user or password', 404);
     }
+
+    await this.removeIndex(id);
 
     this.QuestionRepository.remove(question);
   }
@@ -97,8 +101,12 @@ export class QuestionService {
     });
   }
 
-  async searchForPosts(text: string) {
+  async searchForQuestions(text: string, page?: number, per_page?: number) {
+    let skip = (page - 1) * per_page;
+
     const results = await this.search(text);
+
+    console.log(results);
 
     const ids = results.map((result) => result.id);
 
@@ -106,9 +114,17 @@ export class QuestionService {
       return [];
     }
 
-    return this.QuestionRepository.find({
+    const [items, count] = await this.QuestionRepository.findAndCount({
       where: { id: In(ids) },
+      relations: ['user'],
+      order: {
+        id: 'ASC',
+      },
+      skip: skip,
+      take: per_page,
     });
+
+    return { items, count };
   }
 
   async search(text: string) {
@@ -128,5 +144,45 @@ export class QuestionService {
     const hits = body.hits.hits;
 
     return hits.map((item) => item._source);
+  }
+
+  async updateIndex(question: QuestionEntity|any) {
+    const newBody: QuestionSearchBody = {
+      id: question.id,
+      title: question.title,
+      body: question.body,
+      userId: question.user.id,
+    };
+
+    const script = Object.entries(newBody).reduce((result, [key, value]) => {
+      return `${result} ctx._source.${key}='${value}';`;
+    }, '');
+
+    return this.elasticsearchService.updateByQuery({
+      index: this.elastic_index,
+      body: {
+        query: {
+          match: {
+            id: question.id,
+          },
+        },
+        script: {
+          inline: script,
+        },
+      },
+    });
+  }
+
+  async removeIndex(QuestionId: number) {
+    this.elasticsearchService.deleteByQuery({
+      index: this.elastic_index,
+      body: {
+        query: {
+          match: {
+            id: QuestionId,
+          },
+        },
+      },
+    });
   }
 }

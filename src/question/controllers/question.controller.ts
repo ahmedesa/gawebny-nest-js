@@ -27,13 +27,20 @@ export class QuestionController {
 
   @Post()
   @HttpCode(201)
-  @UseGuards(RoleGuard(UserTypes.User))
+  @UseGuards(JWTAuthGuard)
   create(@Body() createQuestionDto: CreateQuestionDto, @Req() request) {
     return this.questionService.create(createQuestionDto, request.user);
   }
 
   @Get()
-  findAll(@Query() { page, per_page }: PaginationParams) {
+  findAll(
+    @Query() { page, per_page }: PaginationParams,
+    @Query('search') search: string,
+  ) {
+    if (search) {
+      return this.questionService.searchForQuestions(search, page, per_page);
+    }
+
     return this.questionService.findAll(page, per_page);
   }
 

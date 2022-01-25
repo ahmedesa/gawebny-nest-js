@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { UserTypes } from './user-type';
 import { QuestionEntity } from 'src/question/entities/question.entity';
 import { Transform } from 'class-transformer';
+import { AnswerEntity } from 'src/question/entities/answer.entity';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -41,6 +42,9 @@ export class UserEntity extends BaseEntity {
 
   @OneToMany(() => QuestionEntity, (question: QuestionEntity) => question.user)
   public questions: QuestionEntity[];
+
+  @OneToMany(() => AnswerEntity, (answer: AnswerEntity) => answer.user)
+  public answers: AnswerEntity[];
 
   @BeforeInsert()
   async hashPassword() {

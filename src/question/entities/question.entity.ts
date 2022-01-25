@@ -5,8 +5,10 @@ import {
   Entity,
   Index,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { AnswerEntity } from './answer.entity';
 
 @Entity('questions')
 export class QuestionEntity extends BaseEntity {
@@ -26,4 +28,7 @@ export class QuestionEntity extends BaseEntity {
   @Index('question_userId_index')
   @ManyToOne(() => UserEntity, (user: UserEntity) => user.questions)
   public user: UserEntity;
+
+  @OneToMany(() => AnswerEntity, (answer: AnswerEntity) => answer.question)
+  public answers: AnswerEntity[];
 }
