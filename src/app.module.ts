@@ -34,6 +34,8 @@ import { QuestionModule } from './question/question.module';
         MAIL_HOST: Joi.string().required(),
         MAIL_PORT: Joi.number().required(),
         MAIL_FROM: Joi.string().required(),
+        REDIS_HOST: Joi.string().required(),
+        REDIS_PORT: Joi.number().required(),
       }),
     }),
   ],

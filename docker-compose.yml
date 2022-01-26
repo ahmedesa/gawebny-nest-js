@@ -48,6 +48,11 @@ services:
     depends_on:
       - elasticsearch
 
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
 networks:
   postgres:
     driver: bridge
