@@ -3,17 +3,32 @@ import { APP_FILTER } from '@nestjs/core';
 import { HTTPExceptionsFilter } from './shared/http-exception.filter';
 import { DatabaseModule } from './config/database.module';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
 import { UserModule } from './user/user.module';
 import { QuestionModule } from './question/question.module';
+import { SearchModule } from './shared/elastic-search/es.module';
+import { BullModule } from '@nestjs/bull';
+import { QueueModule } from './shared/queue/queue.module';
 
 @Module({
   imports: [
+    QueueModule,
+    SearchModule,
     FileModule,
     QuestionModule,
     DatabaseModule,
     UserModule,
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        redis: {
+          host: configService.get('REDIS_HOST'),
+          port: Number(configService.get('REDIS_PORT')),
+        },
+      }),
+      inject: [ConfigService],
+    }),
     ConfigModule.forRoot({
       validationSchema: Joi.object({
         DB_HOST: Joi.string().required(),
