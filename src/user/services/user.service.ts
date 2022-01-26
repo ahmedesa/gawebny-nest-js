@@ -49,9 +49,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
 
     user = await this.UserRepository.create(CreateUserDTO);
 
-    await this.UserRepository.save(CreateUserDTO);
+    await this.UserRepository.save(CreateUserDTO);    
 
-    await this.mailService.sendMail({
+    await this.mailService.sendMailWithQueue({
       to: user.email,
       subject: 'welcome',
       text: 'welcome to our website',

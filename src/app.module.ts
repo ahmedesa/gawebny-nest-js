@@ -9,11 +9,8 @@ import { UserModule } from './user/user.module';
 import { QuestionModule } from './question/question.module';
 import { SearchModule } from './shared/elastic-search/es.module';
 import { BullModule } from '@nestjs/bull';
-import { QueueModule } from './shared/queue/queue.module';
-
 @Module({
   imports: [
-    QueueModule,
     SearchModule,
     FileModule,
     QuestionModule,
