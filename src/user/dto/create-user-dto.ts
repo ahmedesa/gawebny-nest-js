@@ -1,4 +1,5 @@
-import { IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, Matches } from 'class-validator';
+import { PASSWORD_RULE, PASSWORD_RULE_MESSAGE } from 'src/utils/app.utils';
 import { UserTypes } from '../user-type';
 
 export class CreateUserDTO {
@@ -6,11 +7,12 @@ export class CreateUserDTO {
   username: string;
 
   @IsNotEmpty()
+  @Matches(PASSWORD_RULE, { message: PASSWORD_RULE_MESSAGE })
   password: string;
-  
+
   @IsOptional()
   @IsEnum(UserTypes)
-  type :number;
+  type: number;
 
   @IsNotEmpty()
   email: string;
