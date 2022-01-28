@@ -25,6 +25,15 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   ) {
     super(UserRepository);
   }
+  async findFirst(options : Object) {
+    const question = await this.UserRepository.findOne(options);
+
+    if (!question) {
+      throw new HttpException('invalid user or password', 404);
+    }
+
+    return question;
+  }
 
   async login(UserLoginDTO: UserLoginDTO) {
     const User = await this.UserRepository.findOne({
@@ -47,9 +56,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       throw new UnprocessableEntityException('User already exists');
     }
 
-    user = await this.UserRepository.create(CreateUserDTO);
-
-    await this.UserRepository.save(CreateUserDTO);    
+    user = await this.create(CreateUserDTO);
 
     await this.mailService.sendMailWithQueue({
       to: user.email,
@@ -60,6 +67,13 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     return this.buildUserResponse(user);
   }
 
+  async create(CreateUserDTO: CreateUserDTO) {
+    const user = await this.UserRepository.create(CreateUserDTO);
+
+    await this.UserRepository.save(CreateUserDTO);
+
+    return user;
+  }
   async addAvatar(
     userId: number,
     imageBuffer: Buffer,

@@ -9,6 +9,8 @@ import { UserModule } from './user/user.module';
 import { QuestionModule } from './question/question.module';
 import { SearchModule } from './shared/elastic-search/es.module';
 import { BullModule } from '@nestjs/bull';
+import { Seeder } from './seeders/seeder';
+
 @Module({
   imports: [
     SearchModule,
@@ -53,6 +55,7 @@ import { BullModule } from '@nestjs/bull';
   ],
   controllers: [],
   providers: [
+    Seeder,
     {
       provide: APP_FILTER,
       useClass: HTTPExceptionsFilter,
