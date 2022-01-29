@@ -11,9 +11,12 @@ import { UserRepository } from './repositories/user.repository';
 import { FilesService } from 'src/shared/file/file-uplode.service';
 import { FileModule } from 'src/shared/file/file.module';
 import { MailModule } from 'src/shared/mail/mail.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RateLimiterGuard, RateLimiterModule } from 'nestjs-rate-limiter';
 
 @Module({
   imports: [
+    RateLimiterModule,
     ConfigModule,
     FileModule,
     MailModule,
@@ -43,7 +46,15 @@ import { MailModule } from 'src/shared/mail/mail.module';
       }),
     }),
   ],
-  providers: [UserService, JwtStrategy],
+  providers: [
+    UserService,
+    JwtStrategy,
+    {
+      provide: APP_GUARD,
+      useClass: RateLimiterGuard,
+    },
+  ],
+
   controllers: [UserController, UserAuthController],
   exports: [UserService],
 })

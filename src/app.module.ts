@@ -10,9 +10,11 @@ import { QuestionModule } from './question/question.module';
 import { SearchModule } from './shared/elastic-search/es.module';
 import { BullModule } from '@nestjs/bull';
 import { Seeder } from './seeders/seeder';
+import { RateLimiterModule } from 'nestjs-rate-limiter';
 
 @Module({
   imports: [
+    RateLimiterModule,
     SearchModule,
     FileModule,
     QuestionModule,
