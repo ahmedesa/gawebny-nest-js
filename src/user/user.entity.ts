@@ -2,18 +2,23 @@ import {
   BaseEntity,
   BeforeInsert,
   Column,
+  CreateDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { UserTypes } from './user-type';
 import { QuestionEntity } from 'src/question/entities/question.entity';
 import { Transform } from 'class-transformer';
 import { AnswerEntity } from 'src/question/entities/answer.entity';
+import { ApiProperty } from '@nestjsx/crud/lib/crud';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
+  
+  @ApiProperty({ id: 1, description: 'id' })
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -39,6 +44,12 @@ export class UserEntity extends BaseEntity {
     value ? `${process.env.AWS_PUBLIC_BUCKET_URL}/${value}` : null,
   )
   avatar?: string;
+
+  @CreateDateColumn({ type: 'date' })
+  created_at: Date
+
+  @UpdateDateColumn({ type: 'date' })
+  updated_at: Date
 
   @OneToMany(() => QuestionEntity, (question: QuestionEntity) => question.user)
   public questions: QuestionEntity[];

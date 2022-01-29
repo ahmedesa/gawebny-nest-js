@@ -20,7 +20,9 @@ import RoleGuard from 'src/user/role.guard';
 import { UserTypes } from 'src/user/user-type';
 import { JWTAuthGuard } from 'src/user/jwt-auth.guard';
 import { PaginationParams } from 'src/shared/pagination-params';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Question')
 @Controller('questions')
 export class QuestionController {
   constructor(private readonly questionService: QuestionService) {}

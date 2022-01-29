@@ -18,6 +18,9 @@ import { UserTypes } from '../user-type';
 import { JWTAuthGuard } from '../jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
+import { ApiTags } from '@nestjs/swagger';
+
+@ApiTags('User')
 @UseGuards(RoleGuard(UserTypes.ADMIN))
 @Crud({
   model: { type: UserEntity },

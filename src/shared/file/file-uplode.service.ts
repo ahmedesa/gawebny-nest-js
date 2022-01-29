@@ -10,15 +10,21 @@ interface AWSFile {
 
 @Injectable()
 export class FilesService {
-  constructor(private readonly configService: ConfigService) {}
+  private s3Instance: S3;
+
+  constructor(private readonly configService: ConfigService) {
+    this.s3Instance = new S3({
+      accessKeyId: configService.get('AWS_ACCESS_KEY_ID'),
+      secretAccessKey: configService.get('AWS_SECRET_ACCESS_KEY'),
+      region: configService.get('AWS_REGION'),
+    });
+  }
 
   async uploadPublicFile(
     dataBuffer: Buffer,
     filename: string,
   ): Promise<AWSFile> {
-    const s3 = new S3();
-
-    const uploadResult = await s3
+    const uploadResult = await this.s3Instance
       .upload({
         Bucket: this.configService.get('AWS_PUBLIC_BUCKET_NAME'),
         Body: dataBuffer,
@@ -33,9 +39,7 @@ export class FilesService {
   }
 
   async deletePublicFile(key: string) {
-    const s3 = new S3();
-
-    await s3
+    await this.s3Instance
       .deleteObject({
         Bucket: this.configService.get('AWS_PUBLIC_BUCKET_NAME'),
         Key: key,
