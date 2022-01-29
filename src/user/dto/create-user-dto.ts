@@ -13,12 +13,18 @@ export class CreateUserDTO {
   @Matches(PASSWORD_RULE, { message: PASSWORD_RULE_MESSAGE })
   password: string;
 
-  @ApiProperty({ enum: UserTypes })
+  @ApiProperty({ required: false, enum: UserTypes })
   @IsOptional()
   @IsEnum(UserTypes)
   type: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    required: true,
+    example: 'updated@demo.com',
+  })
+  @Matches(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, {
+    message: 'Email must be a type of email',
+  })
   @IsNotEmpty()
   email: string;
 }
