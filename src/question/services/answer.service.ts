@@ -10,17 +10,17 @@ import { QuestionRepository } from '../repositories/question.repository';
 export class AnswerService {
   constructor(
     @InjectRepository(AnswerRepository)
-    private AnswerRepository: AnswerRepository,
+    private answerRepository: AnswerRepository,
     @InjectRepository(QuestionRepository)
-    private QuestionRepository: QuestionRepository,
+    private questionRepository: QuestionRepository,
   ) {}
 
   async create(createAnswerDto: CreateAnswerDto, user: UserEntity) {
-    const question = await this.QuestionRepository.findOne(
+    const question = await this.questionRepository.findOne(
       createAnswerDto.questionId,
     );
 
-    const answer = await this.AnswerRepository.create({
+    const answer = await this.answerRepository.create({
       body: createAnswerDto.body,
       user: user,
       question: question,
@@ -32,9 +32,9 @@ export class AnswerService {
   }
 
   async findAll(page?: number, per_page?: number) {
-    let skip = (page - 1) * per_page;
+    const skip = (page - 1) * per_page;
 
-    const [items, count] = await this.AnswerRepository.findAndCount({
+    const [items, count] = await this.answerRepository.findAndCount({
       relations: ['user'],
       order: {
         id: 'ASC',
@@ -47,7 +47,7 @@ export class AnswerService {
   }
 
   async findOne(id: number) {
-    const answer = await this.AnswerRepository.findOne(id, {
+    const answer = await this.answerRepository.findOne(id, {
       relations: ['user'],
     });
     if (!answer) {
@@ -58,20 +58,18 @@ export class AnswerService {
   }
 
   async update(id: number, updateAnswerDto: UpdateAnswerDto) {
-    const answer = await this.AnswerRepository.update(id, {
+    return await this.answerRepository.update(id, {
       body: updateAnswerDto.body,
     });
-
-    return answer;
   }
 
   async remove(id: number) {
-    const answer = await this.AnswerRepository.findOne(id);
+    const answer = await this.answerRepository.findOne(id);
 
     if (!answer) {
       throw new HttpException('not found', 404);
     }
 
-    this.AnswerRepository.remove(answer);
+    this.answerRepository.remove(answer);
   }
 }

@@ -17,7 +17,6 @@ import { ApiProperty } from '@nestjsx/crud/lib/crud';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
-  
   @ApiProperty({ id: 1, description: 'id' })
   @PrimaryGeneratedColumn()
   id: number;
@@ -46,10 +45,10 @@ export class UserEntity extends BaseEntity {
   avatar?: string;
 
   @CreateDateColumn({ type: 'date' })
-  created_at: Date
+  created_at: Date;
 
   @UpdateDateColumn({ type: 'date' })
-  updated_at: Date
+  updated_at: Date;
 
   @OneToMany(() => QuestionEntity, (question: QuestionEntity) => question.user)
   public questions: QuestionEntity[];

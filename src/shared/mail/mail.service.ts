@@ -22,7 +22,7 @@ export default class MailService {
     });
   }
 
-  async sendMailWithQueue(options: Mail.Options) {   
+  async sendMailWithQueue(options: Mail.Options) {
     await this.queue.add('mail-job', options);
   }
 

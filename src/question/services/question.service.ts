@@ -16,12 +16,12 @@ export class QuestionService {
 
   constructor(
     @InjectRepository(QuestionRepository)
-    private QuestionRepository: QuestionRepository,
+    private questionRepository: QuestionRepository,
     private readonly elasticsearchService: ElasticsearchService,
   ) {}
 
   async create(createQuestionDto: CreateQuestionDto, user: UserEntity) {
-    const question = await this.QuestionRepository.create({
+    const question = await this.questionRepository.create({
       ...createQuestionDto,
       user: user,
     });
@@ -34,9 +34,9 @@ export class QuestionService {
   }
 
   async findAll(page?: number, per_page?: number) {
-    let skip = (page - 1) * per_page;
+    const skip = (page - 1) * per_page;
 
-    const [items, count] = await this.QuestionRepository.findAndCount({
+    const [items, count] = await this.questionRepository.findAndCount({
       relations: ['user'],
       order: {
         id: 'ASC',
@@ -49,7 +49,7 @@ export class QuestionService {
   }
 
   async findOne(id: number) {
-    const question = await this.QuestionRepository.findOne(id, {
+    const question = await this.questionRepository.findOne(id, {
       relations: ['user'],
     });
     if (!question) {
@@ -60,7 +60,7 @@ export class QuestionService {
   }
 
   async update(id: number, updateQuestionDto: UpdateQuestionDto) {
-    const question = await this.QuestionRepository.update(
+    const question = await this.questionRepository.update(
       id,
       updateQuestionDto,
     );
@@ -75,7 +75,7 @@ export class QuestionService {
   }
 
   async remove(id: number) {
-    const question = await this.QuestionRepository.findOne(id);
+    const question = await this.questionRepository.findOne(id);
 
     if (!question) {
       throw new HttpException('invalid user or password', 404);
@@ -83,7 +83,7 @@ export class QuestionService {
 
     await this.removeIndex(id);
 
-    this.QuestionRepository.remove(question);
+    await this.questionRepository.remove(question);
   }
 
   async indexQuestion(question: QuestionEntity) {
@@ -102,7 +102,7 @@ export class QuestionService {
   }
 
   async searchForQuestions(text: string, page?: number, per_page?: number) {
-    let skip = (page - 1) * per_page;
+    const skip = (page - 1) * per_page;
 
     const results = await this.search(text);
 
@@ -114,7 +114,7 @@ export class QuestionService {
       return [];
     }
 
-    const [items, count] = await this.QuestionRepository.findAndCount({
+    const [items, count] = await this.questionRepository.findAndCount({
       where: { id: In(ids) },
       relations: ['user'],
       order: {
@@ -146,7 +146,7 @@ export class QuestionService {
     return hits.map((item) => item._source);
   }
 
-  async updateIndex(question: QuestionEntity|any) {
+  async updateIndex(question: QuestionEntity | any) {
     const newBody: QuestionSearchBody = {
       id: question.id,
       title: question.title,

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { RateLimit } from 'nestjs-rate-limiter';
 import { CreateUserDTO } from '../dto/create-user-dto';
 import { UserLoginDTO } from '../dto/user-login-dto';
@@ -19,7 +19,7 @@ export class UserAuthController {
   }
 
   @Post('register')
-  async register(@Body() CreateUserDTO: CreateUserDTO) {
-    return await this.User_service.register(CreateUserDTO);
+  async register(@Body() createUserDTO: CreateUserDTO) {
+    return await this.User_service.register(createUserDTO);
   }
 }

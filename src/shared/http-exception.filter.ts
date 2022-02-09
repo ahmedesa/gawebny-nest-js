@@ -25,7 +25,7 @@ export class HTTPExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    var errorResponse: ErrorResponse[] = [
+    const errorResponse: ErrorResponse[] = [
       {
         status: status,
         title: this.camelCaseToMessage(exception.name),
@@ -60,8 +60,8 @@ export class HTTPExceptionsFilter implements ExceptionFilter {
     // }
 
     return status !== HttpStatus.INTERNAL_SERVER_ERROR
-      // ? exception.message || null || exception.getResponse() todo fix 
-      ? exception.getResponse() || null
+      ? // ? exception.message || null || exception.getResponse() todo fix
+        exception.getResponse() || null
       : 'Internal server error';
   }
 

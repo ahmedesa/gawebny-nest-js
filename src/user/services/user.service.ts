@@ -18,15 +18,15 @@ import MailService from 'src/shared/mail/mail.service';
 export class UserService extends TypeOrmCrudService<UserEntity> {
   constructor(
     @InjectRepository(UserRepository)
-    private UserRepository: UserRepository,
+    private userRepository: UserRepository,
     private readonly jwtService: JwtService,
     private readonly filesService: FilesService,
     private readonly mailService: MailService,
   ) {
-    super(UserRepository);
+    super(userRepository);
   }
-  async findFirst(options : Object) {
-    const question = await this.UserRepository.findOne(options);
+  async findFirst(options: any) {
+    const question = await this.userRepository.findOne(options);
 
     if (!question) {
       throw new HttpException('invalid user or password', 404);
@@ -36,7 +36,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   }
 
   async login(UserLoginDTO: UserLoginDTO) {
-    const User = await this.UserRepository.findOne({
+    const User = await this.userRepository.findOne({
       email: UserLoginDTO.email,
     });
 
@@ -50,7 +50,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   async register(CreateUserDTO: CreateUserDTO) {
     const { email } = CreateUserDTO;
 
-    let user = await this.UserRepository.findOne({ where: { email } });
+    let user = await this.userRepository.findOne({ where: { email } });
 
     if (user) {
       throw new UnprocessableEntityException('User already exists');
@@ -68,9 +68,9 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
   }
 
   async create(CreateUserDTO: CreateUserDTO) {
-    const user = await this.UserRepository.create(CreateUserDTO);
+    const user = await this.userRepository.create(CreateUserDTO);
 
-    await this.UserRepository.save(CreateUserDTO);
+    await this.userRepository.save(CreateUserDTO);
 
     return user;
   }
@@ -79,7 +79,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
     imageBuffer: Buffer,
     filename: string,
   ): Promise<string> {
-    const user = await this.UserRepository.findOne(userId);
+    const user = await this.userRepository.findOne(userId);
 
     if (user.avatar) {
       await this.filesService.deletePublicFile(user.avatar);
@@ -89,7 +89,7 @@ export class UserService extends TypeOrmCrudService<UserEntity> {
       imageBuffer,
       filename,
     );
-    await this.UserRepository.update(userId, {
+    await this.userRepository.update(userId, {
       avatar: avatar.key,
     });
 
